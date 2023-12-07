@@ -1,15 +1,23 @@
 <div class="container">
   <%= form_tag(products_path, method: :get) do %>
     <div>
-      <%= label_tag 'filter', 'Filter by:' %>
-      <%= select_tag 'filter', options_for_select([['New', 'new'], ['Recently Updated', 'recently_updated']], @selected_filter) %>
-      <%= submit_tag 'Apply Filter' %>
+      <%= label_tag 'category', 'Select Category:' %>
+      <%= select_tag 'category', options_for_select([['All Categories', ''], *Category.all.map { |c| [c.name, c.id] }], params[:category]) %>
+
+      <%= label_tag 'search', 'Search:' %>
+      <%= text_field_tag 'search', params[:search] %>
+
+      <%= label_tag 'filter', 'Filter:' %>
+      <%= select_tag 'filter', options_for_select([['All', 'all'], ['New', 'new'], ['Recently Updated', 'recently_updated']], params[:filter]) %>
+
+      <%= submit_tag 'Search' %>
     </div>
   <% end %>
 
   <div class="product-list">
-    <h1><%= @selected_filter.capitalize %> Products</h1>
+    <h1><%= @selected_filter.present? ? @selected_filter.capitalize : 'All'  %> Products</h1>
     <div class="products">
+    <%if @filtered_products%>
       <% @filtered_products.each do |product| %>
         <div class="product">
           <%= link_to product_path(product) do %>
@@ -21,6 +29,9 @@
           <button>Add to Cart</button>
         </div>
       <% end %>
+    <%else%>
+      <p>There are no products that match your specified criteria</p>
+    <%end%>
     </div>
 
     <%= paginate @filtered_products %>

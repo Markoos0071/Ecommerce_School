@@ -1,16 +1,26 @@
 class ProductsController < ApplicationController
   def index
-    @selected_filter = params[:filter] || 'new'
+    def index
+      @selected_filter = params[:filter] || 'all'
+      @selected_category = params[:category]
+      @search = params[:search]
 
-    case @selected_filter
-    when 'new'
-      @filtered_products = Product.where('created_at >= ?', 3.days.ago).order(created_at: :desc).page(params[:page]).per(15)
-    when 'recently_updated'
-      @filtered_products = Product.where('updated_at >= ? AND created_at < ?', 3.days.ago, 3.days.ago).order(updated_at: :desc).page(params[:page]).per(15)
-    else
-      @filtered_products = Product.where('created_at >= ?', 3.days.ago).order(created_at: :desc).page(params[:page]).per(15)
-      @selected_filter = 'new'
+      @filtered_products = Product.all
+
+      @filtered_products = @filtered_products.where(category: @selected_category) if @selected_category.present?
+
+      @filtered_products = @filtered_products.ransack(name_or_description_cont: @search).result if @search.present?
+
+      case @selected_filter
+      when 'new'
+        @filtered_products = @filtered_products.where('created_at >= ?', 3.days.ago).order(created_at: :desc)
+      when 'recently_updated'
+        @filtered_products = @filtered_products.where('updated_at >= ?', 1.days.ago).order(updated_at: :desc)
+      end
+
+      @filtered_products = @filtered_products.page(params[:page]).per(15)
     end
+
   end
 
   def show
