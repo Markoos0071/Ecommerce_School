@@ -1,7 +1,28 @@
-<h1>Products</h1>
-<ul>
-  <% @products.each do |product| %>
-    <li><%= link_to product.name, product_path(product) %></li>
+<div class="container">
+  <%= form_tag(products_path, method: :get) do %>
+    <div>
+      <%= label_tag 'filter', 'Filter by:' %>
+      <%= select_tag 'filter', options_for_select([['New', 'new'], ['Recently Updated', 'recently_updated']], @selected_filter) %>
+      <%= submit_tag 'Apply Filter' %>
+    </div>
   <% end %>
-</ul>
 
+  <div class="product-list">
+    <h1><%= @selected_filter.capitalize %> Products</h1>
+    <div class="products">
+      <% @filtered_products.each do |product| %>
+        <div class="product">
+          <%= link_to product_path(product) do %>
+            <div class="product-info">
+              <h2><%= product.name %></h2>
+              <p class="price"><%= number_to_currency(product.price) %></p>
+            </div>
+          <% end %>
+          <button>Add to Cart</button>
+        </div>
+      <% end %>
+    </div>
+
+    <%= paginate @filtered_products %>
+  </div>
+</div>

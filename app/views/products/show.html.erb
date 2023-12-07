@@ -1,3 +1,10 @@
 <h1><%= @product.name %></h1>
 <p><%= @product.description %></p>
 <p><strong>Price:</strong> <%= @product.price %></p>
+
+<% if @product.category.present? %>
+  <p><strong>Category:</strong> <%= link_to @product.category.name, category_path(@product.category) %></p>
+<% end %>
+
+<%= link_to 'Back to All Products', products_path %>
+<%= link_to 'Back to All Categories', categories_path %>

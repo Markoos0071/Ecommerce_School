@@ -74,3 +74,4 @@ end
 gem "activeadmin"
 gem "devise"
 gem "faker"
+gem "kaminari"
