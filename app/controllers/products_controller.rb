@@ -1,4 +1,6 @@
 class ProductsController < ApplicationController
+  before_action :load_cart, only: [:cart]
+
   def index
     @selected_filter = params[:filter] || 'all'
     @selected_category = params[:category]
@@ -6,13 +8,10 @@ class ProductsController < ApplicationController
 
     @filtered_products = Product.all
 
-    # Apply category filter
     @filtered_products = @filtered_products.where(category: @selected_category) if @selected_category.present?
 
-    # Apply keyword search
     @filtered_products = @filtered_products.ransack(name_or_description_cont: @search).result if @search.present?
 
-    # Apply additional filters based on @selected_filter
     case @selected_filter
     when 'new'
       @filtered_products = @filtered_products.where('created_at >= ?', 3.days.ago).order(created_at: :desc)
@@ -22,10 +21,33 @@ class ProductsController < ApplicationController
 
     @filtered_products = @filtered_products.page(params[:page]).per(15) if @filtered_products
 
-    # rest of your action...
   end
 
   def show
     @product = Product.find(params[:id])
+  end
+
+
+  def add_to_cart
+    product = Product.find(params[:id])
+    session[:cart] ||= []
+    session[:cart] << product.id
+    redirect_back(fallback_location: root_path)
+  end
+
+  def remove_from_cart
+    product = Product.find(params[:id])
+    session[:cart]&.delete(product.id)
+    redirect_back(fallback_location: root_path)
+  end
+
+  def cart
+    @cart_products = Product.where(id: @cart)
+  end
+
+  private
+
+  def load_cart
+    @cart = session[:cart] || []
   end
 end

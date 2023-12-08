@@ -15,6 +15,7 @@
   <% end %>
 
   <div class="product-list">
+    <%= link_to 'View Cart', cart_products_path %>
     <h1><%= @selected_filter.present? ? @selected_filter.capitalize : 'All'  %> Products</h1>
     <div class="products">
     <%if @filtered_products%>
@@ -33,7 +34,12 @@
               <p class="price"><%= number_to_currency(product.price) %></p>
             </div>
           <% end %>
-          <button>Add to Cart</button>
+          <% if in_cart?(product) %>
+            <p>This product is already in the cart</p>
+            <%= button_to 'Remove from Cart', remove_from_cart_product_path(product), method: :delete %>
+          <% else %>
+            <%= button_to 'Add to Cart', add_to_cart_product_path(product), method: :post %>
+          <% end %>
         </div>
       <% end %>
     <%else%>
