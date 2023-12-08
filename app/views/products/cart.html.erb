@@ -1,19 +1,24 @@
-<div class="cart">
-  <h2>Your Shopping Cart</h2>
-  <% if @cart_products.present? %>
-    <ul>
-      <% @cart_products.each do |product| %>
-        <div class="product-image">
-          <% if product.image.attached? %>
-            <%= image_tag url_for(product.image), height: '100' %>
-          <% else %>
-            <p>No Image</p>
-          <% end %>
+<div class="container">
+  <div class="product-list">
+    <h2>Your Shopping Cart</h2>
+    <% if @cart_products.present? %>
+      <ul>
+        <% @cart_products.each do |product| %>
+        <div class="product">
+          <div class="product-image">
+            <% if product.image.attached? %>
+              <%= image_tag url_for(product.image), height: '100' %>
+            <% else %>
+              <p>No Image</p>
+            <% end %>
+          </div>
+          <li><%= product.name %> - <%= number_to_currency(product.price) %></li>
+          <%= button_to 'Remove from Cart', remove_from_cart_product_path(product), method: :delete %>
         </div>
-        <li><%= product.name %> - <%= number_to_currency(product.price) %></li>
-      <% end %>
-    </ul>
-  <% else %>
-    <p>Your cart is empty.</p>
-  <% end %>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>Your cart is empty.</p>
+    <% end %>
+  </div>
 </div>
