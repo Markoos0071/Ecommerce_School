@@ -1,10 +1,18 @@
+<%= link_to 'Back to All Products', products_path %>
+<%= link_to 'Back to All Categories', categories_path %>
+
 <h1><%= @product.name %></h1>
 <p><%= @product.description %></p>
 <p><strong>Price:</strong> <%= @product.price %></p>
+<div class="product-image">
+  <% if @product.image.attached? %>
+    <%= image_tag url_for(@product.image), height: '100' %>
+  <% else %>
+    <p>No Image</p>
+  <% end %>
+</div>
 
 <% if @product.category.present? %>
   <p><strong>Category:</strong> <%= link_to @product.category.name, category_path(@product.category) %></p>
 <% end %>
 
-<%= link_to 'Back to All Products', products_path %>
-<%= link_to 'Back to All Categories', categories_path %>
