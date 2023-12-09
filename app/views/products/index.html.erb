@@ -16,6 +16,7 @@
 
   <div class="product-list">
     <%= link_to 'View Cart', cart_products_path %>
+    <%= link_to 'Checkout', checkout_products_path, class: 'nav-link' %>
     <h1><%= @selected_filter.present? ? @selected_filter.capitalize : 'All'  %> Products</h1>
     <div class="products">
     <%if @filtered_products%>

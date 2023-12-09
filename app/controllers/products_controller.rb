@@ -1,5 +1,6 @@
 class ProductsController < ApplicationController
   before_action :load_cart, only: [:cart]
+  helper_method :session_cart_quantity
 
   def index
     @selected_filter = params[:filter] || 'all'
@@ -31,21 +32,77 @@ class ProductsController < ApplicationController
   def add_to_cart
     product = Product.find(params[:id])
     session[:cart] ||= []
-    session[:cart] << product.id
+    cart_item = session[:cart].find { |item| item['id'] == product.id }
+
+    if cart_item
+      cart_item['quantity'] += 1
+    else
+      session[:cart] << { 'id' => product.id, 'quantity' => 1 }
+    end
+
     redirect_back(fallback_location: root_path)
+  end
+
+  def update_cart
+    product = Product.find(params[:id])
+    quantity = params[:quantity].to_i
+
+    if quantity.positive?
+      session[:cart].find { |item| item['id'] == product.id }['quantity'] = quantity
+    else
+      session[:cart].delete_if { |item| item['id'] == product.id }
+    end
+
+    redirect_to cart_products_path
   end
 
   def remove_from_cart
-    product = Product.find(params[:id])
-    session[:cart]&.delete(product.id)
+    product_id = params[:id]
+    session[:cart]&.delete_if { |item| item['id'] == product_id.to_i }
     redirect_back(fallback_location: root_path)
   end
 
+
   def cart
+    @cart_products = Product.where(id: @cart.map { |item| item['id'] })
+  end
+
+
+  def checkout
     @cart_products = Product.where(id: @cart)
+    @total_amount = calculate_total_amount(@cart_products)
+    @provinces = ['Ontario', 'Quebec', 'British Columbia', 'Alberta', 'Manitoba', 'Saskatchewan', 'Nova Scotia', 'New Brunswick', 'Newfoundland and Labrador', 'Prince Edward Island']
+
+    if request.post?
+      # Process the checkout
+      customer = create_or_find_customer(params[:customer])
+      order = create_order(customer, @cart_products, @total_amount)
+
+      # Clear the cart after successful checkout
+      session[:cart] = []
+
+      redirect_to order_path(order)
+    end
+  end
+
+  def session_cart_quantity(product_id)
+    cart_item = session[:cart].find { |item| item['id'] == product_id.to_i }
+    cart_item ? cart_item['quantity'].to_i : 0
   end
 
   private
+
+  def calculate_total_amount(cart_products)
+    # Implement your logic to calculate the total amount
+  end
+
+  def create_or_find_customer(customer_params)
+    # Implement your logic to create or find a customer based on the provided parameters
+  end
+
+  def create_order(customer, cart_products, total_amount)
+    # Implement your logic to create an order and order items
+  end
 
   def load_cart
     @cart = session[:cart] || []

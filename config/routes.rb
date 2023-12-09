@@ -5,10 +5,12 @@ Rails.application.routes.draw do
   resources :products, only: [:index, :show] do
     member do
       post 'add_to_cart'
+      patch 'update_cart'
       delete 'remove_from_cart'
     end
     collection do
       get 'cart'
+      get 'checkout'
     end
   end
 

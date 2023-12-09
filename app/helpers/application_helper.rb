@@ -1,5 +1,6 @@
 module ApplicationHelper
   def in_cart?(product)
-    session[:cart]&.include?(product.id)
+    session[:cart].present? && session[:cart].any? { |item| item['id'] == product.id }
   end
+
 end
