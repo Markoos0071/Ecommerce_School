@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_09_221035) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_10_201328) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -140,7 +140,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_09_221035) do
     t.integer "province_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["province_id"], name: "index_users_on_province_id"
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

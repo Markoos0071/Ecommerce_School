@@ -5,19 +5,18 @@
     <%= form_tag checkout_products_path, method: :post do %>
       <!-- Display cart items and total amount -->
       <h2>Checkout</h2>
-      <% @cart_products.each do |product| %>
-        <div>
-          <%= product.name %>
-          <%= product.price %>
-        </div>
+      <% if @cart_products.present? %>
+        <% @cart_products.each do |product| %>
+          <div>
+            <%= product.name %>
+            <%= product.price %>
+          </div>
+        <% end %>
       <% end %>
 
       <!-- Customer details form -->
       <%= label_tag 'customer[address]', 'Address' %>
       <%= text_field_tag 'customer[address]' %>
-
-      <%= label_tag 'customer[province]', 'Province' %>
-      <%= select_tag 'customer[province]', options_for_select(@provinces) %>
 
       <%= submit_tag 'Checkout' %>
     <% end %>

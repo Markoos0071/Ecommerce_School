@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :load_cart, only: [:cart]
+  before_action :load_cart, only: [:cart, :checkout]
   helper_method :session_cart_quantity
 
   def index
@@ -65,11 +65,6 @@ class ProductsController < ApplicationController
 
   def cart
     @cart_products = Product.where(id: @cart.map { |item| item['id'] })
-  end
-
-
-  def checkout
-    @cart_products = Product.where(id: @cart)
     @total_amount = calculate_total_amount(@cart_products)
     @provinces = ['Ontario', 'Quebec', 'British Columbia', 'Alberta', 'Manitoba', 'Saskatchewan', 'Nova Scotia', 'New Brunswick', 'Newfoundland and Labrador', 'Prince Edward Island']
 
@@ -77,6 +72,40 @@ class ProductsController < ApplicationController
       # Process the checkout
       customer = create_or_find_customer(params[:customer])
       order = create_order(customer, @cart_products, @total_amount)
+      province = params[:customer][:province]
+      tax_rates = Province.find_by(name: province)&.tax_rates
+      pst = @total_amount * tax_rates.pst_rate
+      gst = @total_amount * tax_rates.gst_rate
+      hst = @total_amount * tax_rates.hst_rate
+
+      total_with_taxes = @total_amount + pst + gst + hst
+
+
+      # Clear the cart after successful checkout
+      session[:cart] = []
+
+      redirect_to order_path(order)
+    end
+  end
+
+
+  def checkout
+    @cart_products = Product.where(id: @cart.map { |item| item['id'] })
+    @total_amount = calculate_total_amount(@cart_products)
+    @provinces = ['Ontario', 'Quebec', 'British Columbia', 'Alberta', 'Manitoba', 'Saskatchewan', 'Nova Scotia', 'New Brunswick', 'Newfoundland and Labrador', 'Prince Edward Island']
+
+    if request.post?
+      # Process the checkout
+      customer = create_or_find_customer(params[:customer])
+      order = create_order(customer, @cart_products, @total_amount)
+      province = params[:customer][:province]
+      tax_rates = Province.find_by(name: province)&.tax_rates
+      pst = @total_amount * tax_rates.pst_rate
+      gst = @total_amount * tax_rates.gst_rate
+      hst = @total_amount * tax_rates.hst_rate
+
+      total_with_taxes = @total_amount + pst + gst + hst
+
 
       # Clear the cart after successful checkout
       session[:cart] = []
@@ -93,15 +122,7 @@ class ProductsController < ApplicationController
   private
 
   def calculate_total_amount(cart_products)
-    # Implement your logic to calculate the total amount
-  end
-
-  def create_or_find_customer(customer_params)
-    # Implement your logic to create or find a customer based on the provided parameters
-  end
-
-  def create_order(customer, cart_products, total_amount)
-    # Implement your logic to create an order and order items
+    cart_products.sum { |product| product.price * session_cart_quantity(product.id) }
   end
 
   def load_cart
