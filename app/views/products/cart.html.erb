@@ -3,6 +3,7 @@
     <p>Debugging Output:</p>
     <p><%= "Session Cart: #{session[:cart].inspect}" %></p>
     <p><%= "Cart Products: #{@cart_products.inspect}" %></p>
+    <p><%= "Tax: #{@pst.inspect}" %></p>
     <%= link_to 'Home', products_path %>
     <h2>Your Shopping Cart</h2>
 
@@ -29,6 +30,13 @@
           </div>
         <% end %>
       </ul>
+      <p>Total Cost: <%= number_to_currency(@total_amount) %></p>
+      <p>PST: <%= number_to_currency(@pst) %></p>
+      <p>GST: <%= number_to_currency(@gst) %></p>
+      <p>HST: <%= number_to_currency(@hst) %></p>
+
+      <!-- Grand Total -->
+      <p>Grand Total: <%= number_to_currency(@total_with_taxes) %></p>
     <% else %>
       <p>Your cart is empty.</p>
     <% end %>

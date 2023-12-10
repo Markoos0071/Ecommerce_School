@@ -2,12 +2,6 @@
 
 one:
   customer: one
-  address: MyString
-  province: MyString
-  total: 9.99
 
 two:
   customer: two
-  address: MyString
-  province: MyString
-  total: 9.99

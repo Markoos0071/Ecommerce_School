@@ -6,12 +6,13 @@
       <!-- Display cart items and total amount -->
       <h2>Checkout</h2>
       <% if @cart_products.present? %>
-        <% @cart_products.each do |product| %>
-          <div>
-            <%= product.name %>
-            <%= product.price %>
-          </div>
-        <% end %>
+        <p>Total Cost: <%= number_to_currency(@total_amount) %></p>
+        <p>PST: <%= number_to_currency(@pst) %></p>
+        <p>GST: <%= number_to_currency(@gst) %></p>
+        <p>HST: <%= number_to_currency(@hst) %></p>
+
+        <!-- Grand Total -->
+        <p>Grand Total: <%= number_to_currency(@total_with_taxes) %></p>
       <% end %>
 
       <!-- Customer details form -->

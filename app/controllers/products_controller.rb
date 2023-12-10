@@ -66,51 +66,38 @@ class ProductsController < ApplicationController
   def cart
     @cart_products = Product.where(id: @cart.map { |item| item['id'] })
     @total_amount = calculate_total_amount(@cart_products)
-    @provinces = ['Ontario', 'Quebec', 'British Columbia', 'Alberta', 'Manitoba', 'Saskatchewan', 'Nova Scotia', 'New Brunswick', 'Newfoundland and Labrador', 'Prince Edward Island']
 
-    if request.post?
-      # Process the checkout
-      customer = create_or_find_customer(params[:customer])
-      order = create_order(customer, @cart_products, @total_amount)
-      province = params[:customer][:province]
-      tax_rates = Province.find_by(name: province)&.tax_rates
-      pst = @total_amount * tax_rates.pst_rate
-      gst = @total_amount * tax_rates.gst_rate
-      hst = @total_amount * tax_rates.hst_rate
+    province_name = params[:customer]&.dig(:province)
+    province = Province.find_by(name: province_name)
 
-      total_with_taxes = @total_amount + pst + gst + hst
-
-
-      # Clear the cart after successful checkout
-      session[:cart] = []
-
-      redirect_to order_path(order)
+    if user_signed_in?
+      @current_user_province = current_user.province
+      if @current_user_province.present?
+        @pst = @total_amount * @current_user_province.pst_rate
+        @gst = @total_amount * @current_user_province.gst_rate
+        @hst = @total_amount * @current_user_province.hst_rate
+      end
     end
+
+    @total_with_taxes = @total_amount + @pst + @gst + @hst
+
   end
 
 
   def checkout
     @cart_products = Product.where(id: @cart.map { |item| item['id'] })
     @total_amount = calculate_total_amount(@cart_products)
-    @provinces = ['Ontario', 'Quebec', 'British Columbia', 'Alberta', 'Manitoba', 'Saskatchewan', 'Nova Scotia', 'New Brunswick', 'Newfoundland and Labrador', 'Prince Edward Island']
 
-    if request.post?
-      # Process the checkout
-      customer = create_or_find_customer(params[:customer])
-      order = create_order(customer, @cart_products, @total_amount)
-      province = params[:customer][:province]
-      tax_rates = Province.find_by(name: province)&.tax_rates
-      pst = @total_amount * tax_rates.pst_rate
-      gst = @total_amount * tax_rates.gst_rate
-      hst = @total_amount * tax_rates.hst_rate
+    province_name = params[:customer]&.dig(:province)
+    province = Province.find_by(name: province_name)
 
-      total_with_taxes = @total_amount + pst + gst + hst
-
-
-      # Clear the cart after successful checkout
-      session[:cart] = []
-
-      redirect_to order_path(order)
+    if user_signed_in?
+      @current_user_province = current_user.province
+      if @current_user_province.present?
+        @pst = @total_amount * @current_user_province.pst_rate
+        @gst = @total_amount * @current_user_province.gst_rate
+        @hst = @total_amount * @current_user_province.hst_rate
+      end
     end
   end
 
