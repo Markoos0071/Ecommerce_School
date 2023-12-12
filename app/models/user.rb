@@ -5,7 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
   belongs_to :province
-  has_many :orders, dependent: :destroy
+  has_many :orders, class_name: 'OrderItem', dependent: :destroy
 
   def self.ransackable_attributes(auth_object = nil)
     ["created_at", "email", "encrypted_password", "id", "province_id", "updated_at", "username"]

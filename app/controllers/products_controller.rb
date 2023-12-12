@@ -99,6 +99,17 @@ class ProductsController < ApplicationController
         @hst = @total_amount * @current_user_province.hst_rate
       end
     end
+    @total_with_taxes = @total_amount + @pst + @gst + @hst
+
+    order = Order.new(user: current_user, total_cost: @total_with_taxes)
+    order.save!
+
+    # Add order items to the order
+    @cart_products.each do |product|
+      quantity = session_cart_quantity(product.id)
+      order_item = OrderItem.new(order: order, product: product, quantity: quantity, unit_cost: product.price)
+      order_item.save!
+    end
   end
 
   def session_cart_quantity(product_id)
