@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'orders/index'
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
@@ -16,6 +17,7 @@ Rails.application.routes.draw do
   end
 
   resources :categories, only: [:index, :show]
+  resources :orders, only: [:index]
 
   devise_for :users
   root to: 'products#index'

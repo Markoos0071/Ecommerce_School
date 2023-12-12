@@ -1,0 +1,41 @@
+<!-- app/views/orders/index.html.erb -->
+<div class='container'>
+  <div class="product-list">
+    <%= link_to 'Home', products_path %>
+    <h1>Previous Orders</h1>
+
+    <% if @orders.any? %>
+      <table>
+        <thead>
+          <tr>
+            <th>Order Number</th>
+            <th>Product Name</th>
+            <th>Total Cost</th>
+            <th>Order Date</th>
+            <!-- Add more columns as needed -->
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order| %>
+            <% rowspan_value = order.order_items.size %>
+            <% order.order_items.each_with_index do |order_item, index| %>
+              <tr>
+                <% if index == 0 %>
+                  <td rowspan="<%= rowspan_value %>"><%= order.id %></td>
+                <% end %>
+                <td><%= order_item.product.name %></td>
+                <% if index == 0 %>
+                  <td rowspan="<%= rowspan_value %>"><%= number_to_currency(order.total_cost) %></td>
+                  <td rowspan="<%= rowspan_value %>"><%= order.created_at.strftime('%B %e, %Y %H:%M:%S') %></td>
+                <% end %>
+                <!-- Add more columns as needed -->
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>No previous orders found.</p>
+    <% end %>
+  </div>
+</div>
