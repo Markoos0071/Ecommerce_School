@@ -85,30 +85,60 @@ class ProductsController < ApplicationController
 
 
   def checkout
-    @cart_products = Product.where(id: @cart.map { |item| item['id'] })
-    @total_amount = calculate_total_amount(@cart_products)
+    if request.post?
+      @cart_products = Product.where(id: @cart.map { |item| item['id'] })
+      @total_amount = calculate_total_amount(@cart_products)
 
-    province_name = params[:customer]&.dig(:province)
-    province = Province.find_by(name: province_name)
+      province_name = params[:customer]&.dig(:province)
+      province = Province.find_by(name: province_name)
 
-    if user_signed_in?
-      @current_user_province = current_user.province
-      if @current_user_province.present?
-        @pst = @total_amount * @current_user_province.pst_rate
-        @gst = @total_amount * @current_user_province.gst_rate
-        @hst = @total_amount * @current_user_province.hst_rate
+      if user_signed_in?
+        @current_user_province = current_user.province
+        if @current_user_province.present?
+          @pst = @total_amount * @current_user_province.pst_rate
+          @gst = @total_amount * @current_user_province.gst_rate
+          @hst = @total_amount * @current_user_province.hst_rate
+        end
       end
-    end
-    @total_with_taxes = @total_amount + @pst + @gst + @hst
+      @total_with_taxes = @total_amount + @pst + @gst + @hst
 
-    order = Order.new(user: current_user, total_cost: @total_with_taxes)
-    order.save!
+      order = Order.new(user: current_user, total_cost: @total_with_taxes)
+      order.save!
 
-    # Add order items to the order
-    @cart_products.each do |product|
-      quantity = session_cart_quantity(product.id)
-      order_item = OrderItem.new(order: order, product: product, quantity: quantity, unit_cost: product.price)
-      order_item.save!
+      # Add order items to the order
+      @cart_products.each do |product|
+        quantity = session_cart_quantity(product.id)
+        order_item = OrderItem.new(order: order, product: product, quantity: quantity, unit_cost: product.price)
+        order_item.save!
+      end
+
+      # Permit the address attributes
+      address_params = params.require(:user).permit(address_attributes: [:street_address, :city, :postal_code])
+
+      # Create the address
+      current_user.addresses.create!(address_params[:address_attributes])
+
+      session[:cart] = []
+
+      flash[:success] = 'Checkout Complete!'
+      redirect_to root_path
+      return
+    else
+      @cart_products = Product.where(id: @cart.map { |item| item['id'] })
+      @total_amount = calculate_total_amount(@cart_products)
+
+      province_name = params[:customer]&.dig(:province)
+      province = Province.find_by(name: province_name)
+
+      if user_signed_in?
+        @current_user_province = current_user.province
+        if @current_user_province.present?
+          @pst = @total_amount * @current_user_province.pst_rate
+          @gst = @total_amount * @current_user_province.gst_rate
+          @hst = @total_amount * @current_user_province.hst_rate
+        end
+      end
+      @total_with_taxes = @total_amount + @pst + @gst + @hst
     end
   end
 

@@ -3,23 +3,50 @@
   <%= link_to 'View Cart', cart_products_path %>
   <%= link_to 'Home', products_path %>
     <%= form_tag checkout_products_path, method: :post do %>
-      <!-- Display cart items and total amount -->
       <h2>Checkout</h2>
       <% if @cart_products.present? %>
+        <% @cart_products.each do |product| %>
+          <div class="product">
+            <div class="product-image">
+              <% if product.image.attached? %>
+                <%= image_tag url_for(product.image), height: '100' %>
+              <% else %>
+                <p>No Image</p>
+              <% end %>
+            </div>
+            <li>
+              <%= product.name %> -
+              <%= number_to_currency(product.price.to_f * session_cart_quantity(product.id)) %>
+              <%= form_tag update_cart_product_path(product), method: :patch do %>
+                <%= number_field_tag "quantity", session_cart_quantity(product.id), min: 1 %>
+                <%= submit_tag 'Update Quantity' %>
+              <% end %>
+              <%= button_to 'Remove from Cart', remove_from_cart_product_path(product), method: :delete %>
+            </li>
+          </div>
+        <% end %>
+        <h3>Cost Breakdown</h3>
         <p>Total Cost: <%= number_to_currency(@total_amount) %></p>
         <p>PST: <%= number_to_currency(@pst) %></p>
         <p>GST: <%= number_to_currency(@gst) %></p>
         <p>HST: <%= number_to_currency(@hst) %></p>
 
-        <!-- Grand Total -->
         <p>Grand Total: <%= number_to_currency(@total_with_taxes) %></p>
       <% end %>
 
-      <!-- Customer details form -->
-      <%= label_tag 'customer[address]', 'Address' %>
-      <%= text_field_tag 'customer[address]' %>
+      <h3>Address Details</h3>
+      <%= form_tag checkout_products_path, method: :post do %>
+      <%= label_tag 'user[address_attributes][street_address]', 'Street Address' %>
+      <%= text_field_tag 'user[address_attributes][street_address]' %>
+
+      <%= label_tag 'user[address_attributes][city]', 'City' %>
+      <%= text_field_tag 'user[address_attributes][city]' %>
+
+      <%= label_tag 'user[address_attributes][postal_code]', 'Postal Code' %>
+      <%= text_field_tag 'user[address_attributes][postal_code]' %>
 
       <%= submit_tag 'Checkout' %>
+      <% end %>
     <% end %>
   </div>
 </div>

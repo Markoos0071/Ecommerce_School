@@ -4,6 +4,7 @@
     <h2>Your Shopping Cart</h2>
 
     <% if @cart_products.present? %>
+      <%= link_to 'Checkout', checkout_products_path, class: 'nav-link' %>
       <ul>
         <% @cart_products.each do |product| %>
           <div class="product">

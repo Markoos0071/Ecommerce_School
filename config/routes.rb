@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     collection do
       get 'cart'
       get 'checkout'
+      post 'checkout'
     end
   end
 
