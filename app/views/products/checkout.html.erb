@@ -1,4 +1,8 @@
 <div class="container">
+<%= render 'layouts/nav' %>
+<div>
+  <%= yield %>
+</div>
   <div class="product-list">
   <%= link_to 'View Cart', cart_products_path %>
   <%= link_to 'Home', products_path %>

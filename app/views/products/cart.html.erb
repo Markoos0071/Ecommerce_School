@@ -1,10 +1,14 @@
 <div class="container">
+<%= render 'layouts/nav' %>
+<div>
+  <%= yield %>
+</div>
   <div class="product-list">
     <%= link_to 'Home', products_path %>
     <h2>Your Shopping Cart</h2>
 
     <% if @cart_products.present? %>
-      <%= link_to 'Checkout', checkout_products_path, class: 'nav-link' %>
+      <%= link_to 'Checkout', checkout_products_path%>
       <ul>
         <% @cart_products.each do |product| %>
           <div class="product">

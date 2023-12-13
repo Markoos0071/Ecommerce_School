@@ -1,5 +1,9 @@
 <!-- app/views/orders/index.html.erb -->
 <div class='container'>
+<%= render 'layouts/nav' %>
+<div>
+  <%= yield %>
+</div>
   <div class="product-list">
     <%= link_to 'Home', products_path %>
     <h1>Previous Orders</h1>

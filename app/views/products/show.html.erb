@@ -1,18 +1,26 @@
-<%= link_to 'Back to All Products', products_path %>
-<%= link_to 'Back to All Categories', categories_path %>
+<div class="container">
+  <%= render 'layouts/nav' %>
+  <div>
+    <%= yield %>
+  </div>
 
-<h1><%= @product.name %></h1>
-<p><%= @product.description %></p>
-<p><strong>Price:</strong> <%= @product.price %></p>
-<div class="product-image">
-  <% if @product.image.attached? %>
-    <%= image_tag url_for(@product.image), height: '100' %>
-  <% else %>
-    <p>No Image</p>
-  <% end %>
+  <div class="product-list">
+    <%= link_to 'Home', root_path %>
+
+    <h1><%= @product.name %></h1>
+    <p><%= @product.description %></p>
+    <p><strong>Price:</strong> <%= @product.price %></p>
+
+    <div class="product-image">
+      <% if @product.image.attached? %>
+        <%= image_tag url_for(@product.image), height: '100' %>
+      <% else %>
+        <p>No Image</p>
+      <% end %>
+    </div>
+
+    <% if @product.category.present? %>
+      <p><strong>Category:</strong> <%= link_to @product.category.name, category_path(@product.category) %></p>
+    <% end %>
+  </div>
 </div>
-
-<% if @product.category.present? %>
-  <p><strong>Category:</strong> <%= link_to @product.category.name, category_path(@product.category) %></p>
-<% end %>
-

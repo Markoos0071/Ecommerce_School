@@ -1,20 +1,4 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
- * vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS
- * files in this directory. Styles in this file should be added after the last require_* statement.
- * It is generally better to create a new file per style scope.
- *
- *= require_tree .
- *= require_self
- */
-
- body {
+body {
   font-family: 'Arial', sans-serif;
   background-color: #d8d8d8;
   margin: 0;
@@ -25,6 +9,61 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+}
+
+.navbar {
+  background-color: #333;
+  padding: 10px;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-form {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-form-group {
+  display: flex;
+  align-items: center;
+}
+
+.nav-select,
+.nav-input,
+.nav-button {
+  padding: 5px;
+}
+
+.nav-select {
+  width: 150px;
+}
+
+.nav-button {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+
+  &:hover {
+    background-color: #2980b9;
+  }
+}
+
+.nav-links {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 12px;
+  border: 1px solid #fff;
+  border-radius: 5px;
 }
 
 .product-list {
@@ -40,28 +79,7 @@
     margin-bottom: 20px;
   }
 
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
 
-    li {
-      margin-bottom: 10px;
-    }
-
-    a {
-      color: #3498db;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-
-  .pagination {
-    margin-top: 20px;
-  }
 }
 
 form {
@@ -131,7 +149,7 @@ form {
   }
 
   button {
-    background-color: #3498db;
+    background-color: #2a71a0;
     color: #fff;
     padding: 8px 12px;
     border: none;
@@ -142,5 +160,172 @@ form {
     &:hover {
       background-color: #2980b9;
     }
+  }
+}
+
+/* Register Page */
+.body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.registration-container {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 400px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.input, .select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.password-hint {
+  font-size: 12px;
+  color: #777;
+}
+
+.btn-submit {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-submit:hover {
+  background-color: #45a049;
+}
+
+/* Login Page*/
+.login-container {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 400px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.checkbox {
+  margin-right: 5px;
+}
+
+.remember-label {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Media Queries */
+
+@media screen and (max-width: 992px) {
+  .navbar {
+    padding: 15px;
+  }
+
+  .nav-select {
+    width: 120px;
+  }
+
+  .nav-button {
+    padding: 12px 15px;
+  }
+
+  .nav-link {
+    padding: 12px 15px;
+  }
+
+  .product {
+    width: calc(50% - 20px);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .nav-links,
+  .nav-form {
+    margin-top: 10px;
+  }
+
+  .nav-form-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .nav-button {
+    width: 100%;
+  }
+
+  .product {
+    width: calc(50% - 15px);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .navbar {
+    padding: 10px;
+  }
+
+  .nav-form,
+  .nav-links {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .nav-select {
+    width: 100%;
+  }
+
+  .nav-button {
+    padding: 12px;
+  }
+
+  .registration-container,
+  .login-container {
+    width: 100%;
+  }
+
+  .product {
+    width: 100%;
   }
 }
